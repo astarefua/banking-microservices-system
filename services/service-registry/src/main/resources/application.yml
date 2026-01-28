@@ -1,0 +1,37 @@
+spring:
+  application:
+    name: service-registry
+
+server:
+  port: 8761
+
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    # Don't register itself as a client
+    registerWithEureka: false
+    fetchRegistry: false
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+
+  server:
+    # Disable self-preservation mode for development
+    enable-self-preservation: false
+    eviction-interval-timer-in-ms: 3000
+
+# Actuator endpoints for monitoring
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always
+
+# Logging
+logging:
+  level:
+    com.netflix.eureka: INFO
+    com.netflix.discovery: INFO
