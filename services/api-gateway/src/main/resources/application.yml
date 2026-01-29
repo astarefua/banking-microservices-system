@@ -1,0 +1,75 @@
+spring:
+  application:
+    name: api-gateway
+
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+
+      routes:
+        # Account Service Routes
+        - id: account-service
+          uri: lb://ACCOUNT-SERVICE
+          predicates:
+            - Path=/api/accounts/**
+          filters:
+            - RewritePath=/api/accounts/(?<segment>.*), /${segment}
+
+        # Transaction Service Routes
+        - id: transaction-service
+          uri: lb://TRANSACTION-SERVICE
+          predicates:
+            - Path=/api/transactions/**
+          filters:
+            - RewritePath=/api/transactions/(?<segment>.*), /${segment}
+
+        # Notification Service Routes
+        - id: notification-service
+          uri: lb://NOTIFICATION-SERVICE
+          predicates:
+            - Path=/api/notifications/**
+          filters:
+            - RewritePath=/api/notifications/(?<segment>.*), /${segment}
+
+        # Fraud Detection Service Routes
+        - id: fraud-detection-service
+          uri: lb://FRAUD-DETECTION-SERVICE
+          predicates:
+            - Path=/api/fraud/**
+          filters:
+            - RewritePath=/api/fraud/(?<segment>.*), /${segment}
+
+server:
+  port: 8080
+
+# Eureka Client Configuration
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+    fetch-registry: true
+    register-with-eureka: true
+  instance:
+    prefer-ip-address: true
+    hostname: localhost
+
+# Actuator Configuration
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,gateway
+  endpoint:
+    health:
+      show-details: always
+    gateway:
+      enabled: true
+
+# Logging
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+    com.banking.apigateway: DEBUG
