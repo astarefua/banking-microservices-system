@@ -40,7 +40,7 @@ spring:
           predicates:
             - Path=/api/fraud/**
           filters:
-            - RewritePath=/api/fraud/(?<segment>.*), /${segment}
+            - RewritePath=/api/fraud/(?<segment>.*), /api/fraud/${segment}
 
 server:
   port: 8080
